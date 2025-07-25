@@ -14,7 +14,7 @@ export default function UserModal({ user, onClose }) {
         <p>Телефон: {user.phone}</p>
         <p>Email: {user.email}</p>
         <p>
-          Адрес: {user.address?.address}, {user.address?.city}, {user.address?.state} {user.address?.country}
+          Адрес: {user.address?.address}, {user.address?.city}, {user.address?.state}, {user.address?.country}
         </p>
 
         <button className="modal-close-button" onClick={onClose}>
