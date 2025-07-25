@@ -4,7 +4,7 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: rgb(255, 255, 255, 0.87);
   background-color: #242424;
 
   font-synthesis: none;
@@ -13,8 +13,170 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-th {
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+  z-index: 5;
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.table-wrapper {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.table-wrapper thead {
+  background-color: #2b2b2b;
+}
+
+.table-wrapper table {
+  width: 100%;
+  max-width: 1400px;
+  border: 1px solid #999;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.table-wrapper tbody tr:nth-child(odd) {
+  background-color: #222;
+}
+
+.table-wrapper tbody tr:nth-child(even) {
+  background-color: #2b2b2b;
+}
+
+.table-wrapper tbody tr:hover {
+  background-color: #444444;
   cursor: pointer;
+  transition: background-color 0.2s ease-out;
+}
+
+.table-wrapper th,
+.table-wrapper td {
+  min-width: 50px;
+  white-space: nowrap;
+  padding: 5px;
+  border: 1px solid #999;
+  vertical-align: top;
+  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+.table-wrapper th input {
+  width: 100%;
+  min-width: 0;
+}
+
+.error {
+  color: #ff6b6b;
+  background-color: #2a2a2a;
+  border: 1px solid #ff6b6b;
+  padding: 10px;
+  margin: 15px 0;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(88, 88, 88, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal-content {
+  background: #222;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  color: white;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.modal-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 16px;
+}
+
+.modal-close-button {
+  margin-top: 20px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: #646cff;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.modal-close-button:hover {
+  background-color: #4b54d3;
 }
 
 a {
@@ -27,11 +189,15 @@ a:hover {
 }
 
 body {
-  margin: 0;
   display: flex;
-  place-items: center;
+  flex-direction: column;
+  align-items: center;
   min-width: 320px;
   min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 h1 {
@@ -48,7 +214,7 @@ button {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.2s;
 }
 button:hover {
   border-color: #646cff;

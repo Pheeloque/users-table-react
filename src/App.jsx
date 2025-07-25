@@ -1,17 +1,27 @@
 import { useState, useMemo } from "react";
 import useUsers from "./hooks/useUsers";
-import TableHeader from "./components/TableHeader";
 import Pagination from "./components/Pagination";
-import { COLUMNS, ROWS_PER_PAGE } from "./constants";
+import { ROWS_PER_PAGE } from "./constants";
+import Table from "./components/Table";
+import UserModal from "./components/UserModal";
 
 export default function App() {
   const [page, setPage] = useState(1);
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState(null);
   const [filters, setFilters] = useState({});
+  const [selectedUser, setSelectedUser] = useState(null);
 
   // Загрузка всех пользователей для фильтра
   const { users, total, loading, error } = useUsers({ sortField, sortDirection });
+
+  function handleRowClick(user) {
+    setSelectedUser(user);
+  }
+
+  function closeModal() {
+    setSelectedUser(null);
+  }
 
   // Фильтруем по всем колонкам
   const filteredUsers = useMemo(() => {
@@ -21,7 +31,7 @@ export default function App() {
       Object.entries(filters).every(([key, value]) => {
         if (!value) return true;
         const val = getValue(user, key);
-        return val && val.toString().toLowerCase().includes(value.toLowerCase());
+        return val && val.toString().toLowerCase().startsWith(value.toLowerCase());
       })
     );
   }, [users, filters]);
@@ -53,50 +63,45 @@ export default function App() {
     setPage(1);
   }
 
-  if (loading) return <div>Загрузка...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (error) {
+    return (
+      <div className="app-wrapper">
+        <div className="error">Ошибка при загрузке данных: {error}</div>
+      </div>
+    );
+  }
+
+  // console.log("Users middlename:", users.map((u) => u.maidenName));
 
   return (
-    <div>
+    <div className="app-wrapper">
       <h1>Пользователи</h1>
 
-      <table border="1" cellPadding="5" style={{ borderCollapse: "collapse", width: "100%" }}>
-        <thead>
-          <TableHeader
-            sortField={sortField}
-            sortDirection={sortDirection}
-            onSortChange={handleSortChange}
-            filters={filters}
-            onFilterChange={handleFilterChange}
-          />
-        </thead>
-        <tbody>
-          {pagedUsers.map((user) => (
-            <tr key={user.id}>
-              <td>{user.lastName}</td>
-              <td>{user.firstName}</td>
-              <td>{user.maidenName}</td>
-              <td>{user.age}</td>
-              <td>{user.gender}</td>
-              <td>{user.phone}</td>
-              <td>{user.email}</td>
-              <td>{user.address.country}</td>
-              <td>{user.address.city}</td>
-            </tr>
-          ))}
-          {pagedUsers.length === 0 && (
-            <tr>
-              <td colSpan={COLUMNS.length} style={{ textAlign: "center" }}>
-                Нет данных
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <div className="table-wrapper">
+        {error && <div className="error">{error}</div>}
+
+        <Table
+          users={pagedUsers}
+          sortField={sortField}
+          sortDirection={sortDirection}
+          filters={filters}
+          onSortChange={handleSortChange}
+          onFilterChange={handleFilterChange}
+          onRowClick={handleRowClick}
+        />
+
+        <UserModal user={selectedUser} onClose={closeModal} />
+
+        {loading && (
+          <div className="overlay">
+            <div className="spinner" />
+          </div>
+        )}
+      </div>
 
       <Pagination
         page={page}
-        total={total}
+        total={filteredUsers.length}
         onPageChange={(newPage) => {
           if (newPage >= 1 && newPage <= Math.ceil(total / ROWS_PER_PAGE)) {
             setPage(newPage);
